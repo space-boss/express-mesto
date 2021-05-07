@@ -1,0 +1,25 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "backend of the Mesto service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/space-boss/express-mesto.git"
+  },
+  "author": "Irina Herzberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/space-boss/express-mesto/issues"
+  },
+  "homepage": "https://github.com/space-boss/express-mesto#readme",
+  "devDependencies": {
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}
