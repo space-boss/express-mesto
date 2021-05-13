@@ -8,7 +8,7 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   try {
-    User.findById(req.params._id);
+    User.findById(req.params.userId);
     if (user) {
       res.status(200).send({ data: user })
     } else {
