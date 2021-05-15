@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { usersRoutes } = require('./routes/users.js');
 const { cardsRoutes } = require('./routes/cards.js');
-mongoose.set('debug', true);
+mongoose.set('debug', false);
 
 const app = express();
 
