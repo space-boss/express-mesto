@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { User } = require('../models/User');
 const { handleError } = require('../utils/handleError');
 
@@ -10,15 +11,21 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId, (err, user) => {
-    if (!err) {
-      res.status(200).json({
-        name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
-      });
-    } else {
-      handleError(err, res, 'NotFound', 404, 'Пользователь с указанным _id не найден');
-    }
-  });
+  if (!mongoose.isValidObjectId(req.params.userId)) {
+    res.status(400).send({ message: 'Формат айди не валиден' });
+  } else {
+    User.findById(req.params.userId, (err, user) => { // TODO: use err
+      if (!user) {
+        res.status(400).send({ message: 'Пользователь с данным айди не найден' });
+      } else {
+        res.status(200).json(
+          {
+            name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
+          },
+        );
+      }
+    });
+  }
 };
 
 module.exports.createUser = (req, res) => {
