@@ -1,5 +1,4 @@
 const { Cards } = require('../models/Card');
-const { handleError } = require('../utils/handleError');
 
 module.exports.getCards = (req, res) => {
   Cards.find({})
@@ -8,7 +7,7 @@ module.exports.getCards = (req, res) => {
     .catch((err) => handleError(err, res, 'NotFound', 404, 'Карточки не найдены'));
 };
 
-module.exports.createCard = (req, res) => {
+/*module.exports.createCard = (req, res) => {
   const {
     name, link, ownerId, likes,
   } = req.body;
@@ -50,4 +49,4 @@ module.exports.unlikeCard = (req, res) => {
   )
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => handleError(err, res, 'ValidationError', 400, 'Переданы некорректные данные для снятия лайка'));
-};
+};*/
