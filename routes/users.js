@@ -1,5 +1,7 @@
 const express = require('express');
-const {getUsers, getUserById, createUser, updateUserProfile, updateAvatar } = require('../controllers/users');
+const {
+  getUsers, getUserById, createUser, updateUserProfile, updateAvatar,
+} = require('../controllers/users');
 
 const usersRoutes = express.Router();
 
@@ -14,6 +16,3 @@ usersRoutes.patch('/users/me', updateUserProfile);
 usersRoutes.patch('/users/me/avatar', updateAvatar);
 
 exports.usersRoutes = usersRoutes;
-
-
-
