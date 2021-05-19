@@ -70,7 +70,7 @@ module.exports.unlikeCard = (req, res) => {
     { new: true },
     (err, card) => {
       if (err) {
-        res.status(400).send({ message: 'При постановке лайка переданы некорректные данные' });
+        res.status(400).send({ message: 'При удалении лайка переданы некорректные данные' });
       } else if (!card) {
         res.status(404).send({ message: 'Карточка с данным _id не найдена' });
       } else {
