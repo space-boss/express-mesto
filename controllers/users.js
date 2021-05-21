@@ -35,6 +35,20 @@ module.exports.getUserById = (req, res) => {
   }
 };
 
+module.exports.getCurrentProfile = async (req, res) => {
+  await User.findById(req.user._id, (err, user) => {
+    if (!user) {
+      res.status(404).send({ message: 'Пользователь с данным _id не найден' });
+    } else {
+      res.status(200).json(
+        {
+          name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
+        },
+      );
+    }
+  });
+};
+
 module.exports.createUser = (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
