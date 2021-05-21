@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const { User } = require('../models/User');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
 const opts = { runValidators: true, new: true, useFindAndModify: false };
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SALT_ROUNDS = 10;
@@ -49,6 +51,36 @@ module.exports.createUser = (req, res) => {
       }
       return res.status(500).send(err);
     });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Не передан email или пароль' });
+  }
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильная почта или пароль'));
+      }
+      bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Неправильная почта или пароль'));
+          }
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+          res.cookie('userToken', token, {
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: true,
+          })
+            .send({ _id: user._id });
+        })
+        .catch((err) => {
+          res.status(401).send({ message: 'Вход не авторизован' });
+        });
+    })
+    .catch((err) => res.status(401).send({ message: err.message }));
 };
 
 module.exports.updateUserProfile = (req, res) => {
