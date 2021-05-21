@@ -1,7 +1,10 @@
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { User } = require('../models/User');
 
 const opts = { runValidators: true, new: true, useFindAndModify: false };
+const MONGO_DUPLICATE_ERROR_CODE = 11000;
+const SALT_ROUNDS = 10;
 
 module.exports.getUsers = async (req, res) => {
   try {
@@ -30,20 +33,22 @@ module.exports.getUserById = (req, res) => {
   }
 };
 
-module.exports.createUser = async (req, res) => {
-  try {
-    const { name, about, avatar } = req.body;
-    const user = await User.create({ name, about, avatar });
-    res.status(200).json({
-      name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
-    });
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      res.status(400).send({ message: 'При создании пользователя переданы некорректные данные' });
-    } else {
-      res.status(500).send({ message: 'Произошла ошибка' });
-    }
+module.exports.createUser = (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Не передан email или пароль' });
   }
+  bcrypt.hash(password, SALT_ROUNDS)
+    .then((hash) => User.create({ email, password: hash }))
+    .then((createdUser) => {
+      res.status(200).send({ message: 'Пользователь успешно создан' });
+    })
+    .catch((err) => {
+      if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
+        return res.status(409).send({ message: 'Пользователь с данным email уже существует' });
+      }
+      return res.status(500).send(err);
+    });
 };
 
 module.exports.updateUserProfile = (req, res) => {
