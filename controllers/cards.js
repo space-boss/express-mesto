@@ -13,8 +13,9 @@ module.exports.getCards = async (req, res) => {
 module.exports.createCard = async (req, res) => {
   try {
     const {
-      name, link, ownerId, likes,
+      name, link, likes,
     } = req.body;
+    const ownerId = new mongoose.Types.ObjectId(req.user._id);
     const card = await Cards.create({
       name, link, owner: ownerId, likes,
     });
@@ -30,7 +31,28 @@ module.exports.createCard = async (req, res) => {
   }
 };
 
-module.exports.deleteCardById = (req, res) => {
+module.exports.deleteCardById = async (req, res, next) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.cardId)) {
+      res.status(400).send({ message: 'Формат _id не валиден' });
+    } else {
+      const card = await Cards.findById(req.params.cardId)
+        .orFail();
+      console.log(card);
+      if (card.owner.toString() !== req.user._id) {
+        res.status(401).send({ message: 'Bad request' });
+      }
+
+      const cardWithId = await Cards.findByIdAndDelete(req.params.cardId)
+        .orFail();
+      res.status(200).send(cardWithId);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* module.exports.deleteCardById = (req, res) => {
   if (!mongoose.isValidObjectId(req.params.cardId)) {
     res.status(400).send({ message: 'Формат _id не валиден' });
   } else {
@@ -42,7 +64,7 @@ module.exports.deleteCardById = (req, res) => {
       }
     });
   }
-};
+}; */
 
 module.exports.likeCard = (req, res) => {
   Cards.findByIdAndUpdate(

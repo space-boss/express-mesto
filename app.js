@@ -28,6 +28,10 @@ app.post('/signup', createUser);
 app.use('/', auth, usersRoutes);
 app.use('/', cardsRoutes);
 
+app.use((err, req, res, next) => {
+  res.status(500).send({ message: 'Произошла ошибка' });
+});
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);

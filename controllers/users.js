@@ -8,12 +8,12 @@ const opts = { runValidators: true, new: true, useFindAndModify: false };
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SALT_ROUNDS = 10;
 
-module.exports.getUsers = async (req, res) => {
+module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).send(users);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка' });
+    next(err);
   }
 };
 
@@ -35,7 +35,7 @@ module.exports.getUserById = (req, res) => {
   }
 };
 
-module.exports.getCurrentProfile = async (req, res) => {
+module.exports.getCurrentProfile = async (req, res, next) => {
   await User.findById(req.user._id, (err, user) => {
     if (!user) {
       res.status(404).send({ message: 'Пользователь с данным _id не найден' });
