@@ -17,6 +17,7 @@ const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process
 const { createUser, login } = require('./controllers/users');
 const { usersRoutes } = require('./routes/users.js');
 const { cardsRoutes } = require('./routes/cards.js');
+const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const ValidationError = require('./errors/validation-err');
 const NotFoundError = require('./errors/not-found-err');
 
@@ -38,6 +39,8 @@ const validateUrl = (value, helpers) => {
   return value;
 };
 
+app.use(requestLogger);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -57,6 +60,8 @@ app.post('/signup', celebrate({
 
 app.use('/', auth, usersRoutes);
 app.use('/', cardsRoutes);
+
+app.use(errorLogger);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Ресурс не найден'));
