@@ -63,23 +63,19 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  try {
-    if (isCelebrateError(err)) {
-      const errorBody = err.details.get('body');
-      throw new ValidationError(errorBody['details']['0']['message']);
-    } else {
-      const { statusCode = 500, message } = err;
+  if (isCelebrateError(err)) {
+    const errorBody = err.details.get('body');
+    throw new ValidationError(errorBody.details[0].message);
+  } else {
+    const { statusCode = 500, message } = err;
 
-      res
-        .status(statusCode)
-        .send({
-          message: statusCode === 500
-            ? 'На сервере произошла ошибка'
-            : message,
-        });
-    }
-  } catch (err) {
-    next(err);
+    res
+      .status(statusCode)
+      .send({
+        message: statusCode === 500
+          ? 'На сервере произошла ошибка'
+          : message,
+      });
   }
 });
 
