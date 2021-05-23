@@ -1,10 +1,63 @@
+/* eslint-disable*/
+
 const supertest = require('supertest');
+const mongoose = require('mongoose');
 const app = require('../app');
 
 const email = `test+${Date.now()}@gmail.com`;
+const agent = supertest.agent(app);
+
 let userId = '';
 let cardId = '';
-const agent = supertest.agent(app);
+
+before(function (done) {
+
+  function clearCollections() {
+    for (var collection in mongoose.connection.collections) {
+      mongoose.connection.collections[collection].deleteMany(function() {});
+    }
+    return done();
+  }
+
+  if (mongoose.connection.readyState === 0) {
+    mongoose.connect(config.test.db, function (err) {
+      if (err) throw err;
+      return clearCollections();
+    });
+  } else {
+    return clearCollections();
+  }
+});
+
+after(function (done) {
+  mongoose.disconnect();
+  return done();
+});
+
+describe('GET /cards without being logged in', () => {
+  it('Get cards returns a 401', (done) => {
+    agent
+      .get('/cards')
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+});
+
+describe('GET /cards with invalid token', () => {
+  it('Get cards returns a 401', (done) => {
+    agent
+      .get('/cards')
+      .set('Cookie', 'userToken=invalidtoken')
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+});
 
 describe('POST /signup', () => {
   it('SignUp returns a 200', (done) => {
