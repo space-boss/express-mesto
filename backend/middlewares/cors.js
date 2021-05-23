@@ -3,7 +3,7 @@ const cors = require('cors');
 const allowedCors = [
   'http://spaceboss.mesto.nomoredomains.club',
   'https://spaceboss.mesto.nomoredomains.club',
-  'localhost:3000',
+  'http://localhost:3000',
 ];
 
 const corsOptions = {
