@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/User');
 const BadRequestError = require('../errors/bad-request-err');
 const ValidationError = require('../errors/validation-err');
-const AuthorizationError = require('../errors/authorization-err');
+const AuthError = require('../errors/authentication-err');
 const NotFoundError = require('../errors/not-found-err');
+const ConflictError = require('../errors/conflict-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 const opts = { runValidators: true, new: true, useFindAndModify: false };
@@ -68,7 +69,7 @@ module.exports.createUser = async (req, res, next) => {
       return;
     }
     if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
-      next(new ValidationError('Данный email уже зарегистрирован'));
+      next(new ConflictError('Данный email уже зарегистрирован'));
       return;
     }
     next(err);
@@ -83,11 +84,11 @@ module.exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new AuthorizationError('Неверные почта или пароль');
+      throw new AuthError('Неверные почта или пароль');
     }
     const matchPassword = await bcrypt.compare(password, user.password);
     if (!matchPassword) {
-      throw new AuthorizationError('Неверные почта или пароль');
+      throw new AuthError('Неверные почта или пароль');
     }
     const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
     res.cookie('userToken', token, {
@@ -101,9 +102,9 @@ module.exports.login = async (req, res, next) => {
 };
 
 module.exports.updateUserProfile = async (req, res, next) => {
-  const { _id, name, about } = req.body;
+  const { name, about } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(_id, { name, about }, opts)
+    const user = await User.findByIdAndUpdate(req.user._id, { name, about }, opts)
       .orFail(new NotFoundError('Запрашиваемый профиль не найден'));
     res.status(200).json(
       {
@@ -120,9 +121,9 @@ module.exports.updateUserProfile = async (req, res, next) => {
 };
 
 module.exports.updateAvatar = async (req, res, next) => {
-  const { _id, avatar } = req.body;
+  const { avatar } = req.body;
   try {
-    const user = User.findByIdAndUpdate(_id, { avatar }, opts)
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar }, opts)
       .orFail(new NotFoundError('Запрашиваемый профиль не найден'));
     res.status(200).json(
       {

@@ -13,7 +13,6 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
 
@@ -39,6 +38,7 @@ const userSchema = mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
+        // eslint-disable-next-line no-useless-escape
         return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(v);
       },
       message: (props) => `${props.value} - не валидный адрес ссылки!`,
