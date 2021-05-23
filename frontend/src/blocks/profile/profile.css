@@ -1,0 +1,38 @@
+.profile {
+    display: grid;
+    grid-template-rows: 69.5px 1fr;
+    grid-template-columns: 146px 311px 24px 396px;
+    grid-template-areas:
+    "userpic username edit add"
+    "userpic jobinfo edit add";
+    margin: 0 auto 50px;
+    width: 100%;
+    height: 120px;
+}
+
+@media screen and (max-width: 900px) {
+  .profile {
+    width: calc(100% - 19px*2);
+    grid-template-columns: minmax(min-content, max-content);
+    grid-gap: 0 15px;
+  }
+}
+
+
+@media screen and (max-width: 672px) {
+  .profile {
+    grid-template-rows: 120px 66px 1fr 1fr;
+    grid-template-columns: fit-content(250px) 42px;
+    grid-template-areas:
+    "userpic userpic"
+    "username edit"
+    "jobinfo jobinfo"
+    "add add";
+    grid-gap: 0;
+    height: 286px;
+    width: 282px;
+    margin: 0 auto 36px;
+    justify-items: center;
+    text-align: center;
+  }
+}

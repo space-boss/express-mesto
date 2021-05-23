@@ -1,0 +1,13 @@
+.place__cover-button {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  outline-style: none;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.place__cover-button:hover {
+  opacity: 0.95;
+}

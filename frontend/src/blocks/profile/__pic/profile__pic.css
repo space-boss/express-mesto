@@ -1,0 +1,9 @@
+.profile__pic {
+  grid-area: userpic;
+  z-index: 5;
+  width: 120px;
+  height: 120px;
+  border-radius: 60px;
+  margin: 0;
+  object-fit: cover;
+}

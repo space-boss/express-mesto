@@ -1,0 +1,6 @@
+.header__infobox {
+  display: flex;
+  justify-content: left;
+  width: fit-content;
+  margin-bottom: 46px;
+}

@@ -1,0 +1,17 @@
+.profile__userpic-edit-button {
+  grid-area: userpic;
+  background-color: rgba(0, 0, 0, .8);
+  opacity: 0;
+	z-index: 10;
+	width: 120px;
+	height: 120px;
+  transition: opacity .5s ease-out;
+  background-image: url(../../../images/userpic-edit-button.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 26px 26px;
+}
+
+.profile__userpic-edit-button:hover {
+  opacity: 1;
+}

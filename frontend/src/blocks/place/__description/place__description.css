@@ -1,0 +1,7 @@
+.place__description {
+  width: 243px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+}

@@ -1,0 +1,22 @@
+.popup__container-avatar {
+  position: relative;
+  z-index: 10;
+  width: 430px;
+  height: 272px;
+  margin: auto;
+
+
+  background: #FFFFFF;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 575px) {
+  .popup__container-avatar {
+    width: calc(100% - 45px*2);
+    min-width: 250px;
+    max-width: 320px;
+    height: 100px;
+  }
+}
+

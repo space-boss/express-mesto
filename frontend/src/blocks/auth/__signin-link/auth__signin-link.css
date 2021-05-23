@@ -1,0 +1,11 @@
+.auth__signin-link {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.auth__signin-link:hover {
+  color: #A9A9A9;
+  transition: ease-in-out 0.1s;
+}

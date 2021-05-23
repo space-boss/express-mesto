@@ -1,0 +1,18 @@
+.auth__input-field {
+  font-family: inherit;
+  width: 358px;
+  min-height: 27.26px;
+  margin: 0 0 30px;
+  padding: 0;
+  border: none;
+  color: #FFFFFF;
+  border-bottom: 1px solid #CCCCCC;
+  background-color: transparent;
+}
+
+@media screen and (max-width: 575px) {
+  .auth__input-field {
+    width: calc(100% - 30px*2);
+    margin: 0 30px 10px;
+ }
+}
