@@ -49,7 +49,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
-    avatar: Joi.string().required().custom(validateUrl, 'Ссылка не валидна').default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+    avatar: Joi.string().custom(validateUrl, 'Ссылка не валидна').default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
   }),
@@ -62,21 +62,24 @@ app.use((req, res, next) => {
   next(new NotFoundError('Ресурс не найден'));
 });
 
-app.use(errors);
-
 app.use((err, req, res, next) => {
-  if (err === isCelebrateError) {
-    throw ValidationError();
-  } else {
-    const { statusCode = 500, message } = err;
+  try {
+    if (isCelebrateError(err)) {
+      const errorBody = err.details.get('body');
+      throw new ValidationError(errorBody['details']['0']['message']);
+    } else {
+      const { statusCode = 500, message } = err;
 
-    res
-      .status(statusCode)
-      .send({
-        message: statusCode === 500
-          ? 'На сервере произошла ошибка'
-          : message,
-      });
+      res
+        .status(statusCode)
+        .send({
+          message: statusCode === 500
+            ? 'На сервере произошла ошибка'
+            : message,
+        });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 

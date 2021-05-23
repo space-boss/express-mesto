@@ -59,11 +59,37 @@ describe('GET /cards with invalid token', () => {
   });
 });
 
+describe('POST /signup with invalid email', () => {
+  it('SignUp returns a 400', (done) => {
+    agent
+      .post('/signup')
+      .send({ email: 'a', password: '12345678', avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png' })
+      .expect(400)
+      .end((err, res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+});
+
+describe('POST /signup with invalid password', () => {
+  it('SignUp returns a 400', (done) => {
+    agent
+      .post('/signup')
+      .send({ email, password: '1', avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png' })
+      .expect(400)
+      .end((err, res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+});
+
 describe('POST /signup', () => {
   it('SignUp returns a 200', (done) => {
     agent
       .post('/signup')
-      .send({ email, password: '12345678' })
+      .send({ email, password: '12345678', avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png' })
       .expect(200)
       .end((err, res) => {
         if (err) done(err);
@@ -129,7 +155,7 @@ describe('POST /cards', () => {
 });
 
 describe('POST /cards', () => {
-  it('Posting card with invalid link returns a 500', (done) => {
+  it('Posting card with invalid link returns a 400', (done) => {
     agent
       .post('/cards')
       .send({ name: 'some test card', link: 'h://1.bp.blogspot.com/-FEwLMm70Nqk/U-8nOJYiozI/AAAAAAAANT0/Evy905VXDbw/s1600/esc_dwb_stone_outside_patio_7486_560w.jpg' })
