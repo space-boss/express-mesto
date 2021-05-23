@@ -50,5 +50,5 @@ class AuthApi {
 
 
 export const authApi = new AuthApi({
-  url: "https://auth.nomoreparties.co",
+  url: "http://spaceboss.mesto.nomoredomains.club",
 });

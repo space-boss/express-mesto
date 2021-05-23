@@ -2,8 +2,7 @@ class Api {
   constructor(config){
 		this._url = config.url;
     this._headers = {
-      "Content-Type": "application/json", 
-      "Authorization": config.authorization,
+      "Content-Type": "application/json"
     };
   }
 
@@ -92,7 +91,6 @@ class Api {
 }
 
 export const apiConfig = new Api({
-  url: "https://mesto.nomoreparties.co/v1/cohort-20",
-  authorization: 'e834f1b9-ceab-4d08-a43d-18df96eb5098'
+  url: "http://spaceboss.mesto.nomoredomains.club"
 });
    

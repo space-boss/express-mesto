@@ -21,6 +21,12 @@ const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const ValidationError = require('./errors/validation-err');
 const NotFoundError = require('./errors/not-found-err');
 
+const allowedCors = [
+  'http://spaceboss.mesto.nomoredomains.club',
+  'https://spaceboss.mesto.nomoredomains.club',
+  'localhost:3000',
+];
+
 mongoose.set('debug', true);
 
 app.use(express.json());
@@ -38,6 +44,16 @@ const validateUrl = (value, helpers) => {
   }
   return value;
 };
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  next();
+});
 
 app.use(requestLogger);
 
