@@ -101,9 +101,9 @@ module.exports.login = async (req, res, next) => {
 };
 
 module.exports.updateUserProfile = async (req, res, next) => {
-  const { _id, name, about } = req.body;
+  const { name, about } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(_id, { name, about }, opts)
+    const user = await User.findByIdAndUpdate(req.user._id, { name, about }, opts)
       .orFail(new NotFoundError('Запрашиваемый профиль не найден'));
     res.status(200).json(
       {
@@ -120,9 +120,9 @@ module.exports.updateUserProfile = async (req, res, next) => {
 };
 
 module.exports.updateAvatar = async (req, res, next) => {
-  const { _id, avatar } = req.body;
+  const { avatar } = req.body;
   try {
-    const user = User.findByIdAndUpdate(_id, { avatar }, opts)
+    const user = await User.findByIdAndUpdate(req.user._id, { avatar }, opts)
       .orFail(new NotFoundError('Запрашиваемый профиль не найден'));
     res.status(200).json(
       {
