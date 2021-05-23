@@ -8,14 +8,14 @@ const allowedCors = [
 
 const corsOptions = {
   origin(origin, callback) {
-    if (allowedCors.indexOf(origin) !== || !origin) {
-      callback(null, true)
+    if (allowedCors.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  alowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
-}
+  alowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+};
 
 module.exports = cors(corsOptions);
