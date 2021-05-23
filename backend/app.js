@@ -12,6 +12,7 @@ const { errors } = require('celebrate');
 const { isURL } = require('validator');
 
 const auth = require('./middlewares/auth');
+const cors = require('./middlewares/cors.js');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { createUser, login } = require('./controllers/users');
@@ -21,11 +22,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const ValidationError = require('./errors/validation-err');
 const NotFoundError = require('./errors/not-found-err');
 
-const allowedCors = [
-  'http://spaceboss.mesto.nomoredomains.club',
-  'https://spaceboss.mesto.nomoredomains.club',
-  'localhost:3000',
-];
 
 mongoose.set('debug', true);
 
@@ -44,24 +40,6 @@ const validateUrl = (value, helpers) => {
   }
   return value;
 };
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://spaceboss.mesto.nomoredomains.club');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-
-  next();
-});
-
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-
-  next();
-});
 
 app.use(requestLogger);
 
@@ -84,6 +62,7 @@ app.post('/signup', celebrate({
 
 app.use('/', auth, usersRoutes);
 app.use('/', cardsRoutes);
+app.use(cors);
 
 app.use(errorLogger);
 
