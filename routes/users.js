@@ -1,11 +1,19 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
+const { isURL } = require('validator');
 
 const {
   getUsers, getUserById, updateUserProfile, updateAvatar, getCurrentProfile,
 } = require('../controllers/users');
 
 const usersRoutes = express.Router();
+
+const validateUrl = (value, helpers) => {
+  if (!isURL(value, { require_protocol: true })) {
+    return helpers.message('В данном поле допустимы только валидные ссылки');
+  }
+  return value;
+};
 
 usersRoutes.get('/users', getUsers);
 
@@ -26,7 +34,7 @@ usersRoutes.patch('/users/me', celebrate({
 
 usersRoutes.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri().required(),
+    avatar: Joi.string().required().custom(validateUrl, 'Ссылка не валидна'),
   }),
 }), updateAvatar);
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
+const { isURL } = require('validator');
 
 const {
   getCards, createCard, deleteCardById, likeCard, unlikeCard,
@@ -7,12 +8,19 @@ const {
 
 const cardsRoutes = express.Router();
 
+const validateUrl = (value, helpers) => {
+  if (!isURL(value, { require_protocol: true })) {
+    return helpers.message('В данном поле допустимы только валидные ссылки');
+  }
+  return value;
+};
+
 cardsRoutes.get('/cards', getCards);
 
 cardsRoutes.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().uri().required(),
+    link: Joi.string().required().custom(validateUrl, 'Ссылка не валидна'),
   }),
 }), createCard);
 
