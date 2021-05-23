@@ -46,6 +46,14 @@ const validateUrl = (value, helpers) => {
 };
 
 app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://spaceboss.mesto.nomoredomains.club');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+
+  next();
+});
+
+app.use((req, res, next) => {
   const { origin } = req.headers;
 
   if (allowedCors.includes(origin)) {
