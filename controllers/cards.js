@@ -44,7 +44,6 @@ module.exports.deleteCardById = async (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new BadRequestError('У вас нет прав для удаления данной карточки');
       } else {
-        console.log('hallo');
         const cardWithId = await Cards.findByIdAndDelete(req.params.cardId)
           .orFail(new NotFoundError('Карточка с данным _id не найдена'));
         res.status(200).send(cardWithId);
