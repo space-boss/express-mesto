@@ -2,30 +2,27 @@
 require('dotenv').config();
 const express = require('express');
 
-const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const {
-  celebrate, Joi, isCelebrateError, CelebrateError,
-} = require('celebrate');
-const { errors } = require('celebrate');
+const cors = require('cors');
+const { celebrate, Joi, errors } = require('celebrate');
 const { isURL } = require('validator');
 
 const auth = require('./middlewares/auth');
-const cors = require('./middlewares/cors.js');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { createUser, login } = require('./controllers/users');
 const { usersRoutes } = require('./routes/users.js');
 const { cardsRoutes } = require('./routes/cards.js');
-const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const ValidationError = require('./errors/validation-err');
 const NotFoundError = require('./errors/not-found-err');
 
-
 mongoose.set('debug', true);
 
-app.use(express.json());
+const app = express();
+
+app.use(bodyParser.json());
 
 app.use(cookieParser());
 
@@ -41,7 +38,7 @@ const validateUrl = (value, helpers) => {
   return value;
 };
 
-app.use(requestLogger);
+app.use(cors());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -61,30 +58,24 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use('/', auth, usersRoutes);
-app.use('/', cardsRoutes);
-app.use(cors);
-
-app.use(errorLogger);
+app.use('/', auth, cardsRoutes);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Ресурс не найден'));
 });
 
-app.use((err, req, res, next) => {
-  if (isCelebrateError(err)) {
-    const errorBody = err.details.get('body');
-    throw new ValidationError(errorBody.details[0].message);
-  } else {
-    const { statusCode = 500, message } = err;
+app.use(errors());
 
-    res
-      .status(statusCode)
-      .send({
-        message: statusCode === 500
-          ? 'На сервере произошла ошибка'
-          : message,
-      });
-  }
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+  next();
 });
 
 app.listen(PORT, () => {
