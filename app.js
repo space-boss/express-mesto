@@ -2,13 +2,10 @@
 require('dotenv').config();
 const express = require('express');
 
-const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const {
-  celebrate, Joi, isCelebrateError, CelebrateError,
-} = require('celebrate');
-const { errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const { isURL } = require('validator');
 
 const auth = require('./middlewares/auth');
@@ -22,7 +19,9 @@ const NotFoundError = require('./errors/not-found-err');
 
 mongoose.set('debug', true);
 
-app.use(express.json());
+const app = express();
+
+app.use(bodyParser.json());
 
 app.use(cookieParser());
 
@@ -56,27 +55,24 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use('/', auth, usersRoutes);
-app.use('/', cardsRoutes);
+app.use('/', auth, cardsRoutes);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Ресурс не найден'));
 });
 
-app.use((err, req, res, next) => {
-  if (isCelebrateError(err)) {
-    const errorBody = err.details.get('body');
-    throw new ValidationError(errorBody.details[0].message);
-  } else {
-    const { statusCode = 500, message } = err;
+app.use(errors());
 
-    res
-      .status(statusCode)
-      .send({
-        message: statusCode === 500
-          ? 'На сервере произошла ошибка'
-          : message,
-      });
-  }
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+  next();
 });
 
 app.listen(PORT, () => {
