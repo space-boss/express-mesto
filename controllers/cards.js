@@ -42,12 +42,12 @@ module.exports.deleteCardById = async (req, res, next) => {
       const card = await Cards.findById(req.params.cardId)
         .orFail(new NotFoundError('Данная карточка не найдена'));
       if (card.owner.toString() !== req.user._id) {
-        res.status(401).send({ message: 'У вас нет прав для удаления данной карточки' });
+        throw new BadRequestError('У вас нет прав для удаления данной карточки');
+      } else {
+        const cardWithId = await Cards.findByIdAndDelete(req.params.cardId)
+          .orFail(new NotFoundError('Карточка с данным _id не найдена'));
+        res.status(200).send(cardWithId);
       }
-
-      const cardWithId = await Cards.findByIdAndDelete(req.params.cardId)
-        .orFail(new NotFoundError('Карточка с данным _id не найдена'));
-      res.status(200).send(cardWithId);
     }
   } catch (err) {
     next(err);
