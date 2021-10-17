@@ -29,7 +29,7 @@ This project creates REST API for the [Mesto React project](https://github.com/s
 API is protected with authorization middleware. 
 
 ## Technologies
-* expressjs
+* Express.js
 * API REST
 * MongoDB
 * Celebrate & Joi validation
