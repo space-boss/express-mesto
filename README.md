@@ -1,42 +1,41 @@
-# Проектная работа 14: Аутентификация и авторизация на серверной стороне
+# BACKEND FOR MESTO. Student project for Yandex.Praktikum
 
-## Исправления после второго ревью:
-* Файл с тестами исключен из коммита
-* Ошибка валидации celebrate возвращает json-объект, статус-код 400
+## Description
+This project creates REST API for the [Mesto React project](https://github.com/space-boss/mesto-react) connected to the MongoDB database. When the service is started it connects to the mongo server locally using the url `mongodb://localhost:27017/mestodb`. The application sets up the user and card scheme. Some fields of the scheme are validated using regular expressions. 
 
-## Исправления после первого ревью:
-* Исправлен способ валидации ulr (кастомное правило валидации Joi через модуль Validator)
-* Исправлены ошибки при обновлении аватара и информации о пользователе
-* Скорректированы коды ошибок
+## Functionality
+### Card routes
+* GET /cards - returns all cards from the database;
+* POST /cards - creates a card with title and image link given in the body of the query;
+* DELETE /cards/:cardId - deletes a card with specified _id;
+* PUT /cards/:cardId - sets a like on the card with a given _id; 
 
-Функционал 14й работы:
-* Контроллер createUser добавляет поля с электронной почтой и паролем. Пароль проходит хэширование перед добавлением в базу данных
-* Создан контроллер для входа в учетную запись
-* Произведен рефакторинг контроллеров пользователя и карточки, ошибки обрабатываются централизованно, функции работают асинхронно
-* API защищены авторизацией
-* Запросы, приходящии на сервер, проходят валидацию библиотекой joi и celebrate
+### User routes
+* GET /users - returns all users from the database;
+* GET /users/me - returns the current active user;
+* GET /users/:userId - returns a user with a specified _id;
+* POST /users - creates a user with name, about and avatar specified in the body of the query;
+* PATCH users/me - updates user information;
+* PATCH user/meavatar - updates userpic link;
 
+### User controllers
+* createUser controller adds fields of email and password used for user registration. The password is hashed before it's added to the database
+* creates controller for user login 
 
-# Проектная работа 13: Бэкэнд проекта место
+### Validation
+* The queries that reach the server are getting validated with via celebrate middleware and joi validation library. 
+* Validation and server errors are handled and returned
 
-## Исправления после первого ревью:
-* Исправлено правило-исключения для eslint, устранены все eslint-ошибки из лога
-* Произведен рефакторинг всех функций в контроллерах карточек и пользователя. Отработана логика обработки ошибок в соответствии с брифом.
-* Все запросы повторно протестированы в Postman. 
+API is protected with authorization middleware. 
 
-TODO: Подумать стоит ли заменить логику проверки пользователя/карточки на обработку ошибки через .orFail
-
-
-
-Работа начинает разработку бэкэнда для проекта место.
-* Для написания и отладки приложения используется локальный сервер
-* Приложение подключено к базе данных MongoDB
-* Приложение разбито на модули
-* Отработка серверных запросов с помощью Postman
-* Валидация ошибок 
-
+## Technologies
+* expressjs
+* API REST
+* MongoDB
+* Celebrate & Joi validation
 
 ## Запуск проекта
-
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+`git clone https://github.com/space-boss/express-mesto`
+`npm install` - installs the dependencies;
+`npm run dev` — starts the server; 
+`npm run start` — starts the server with hot-reload;
