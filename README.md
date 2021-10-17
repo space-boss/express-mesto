@@ -34,8 +34,11 @@ API is protected with authorization middleware.
 * MongoDB
 * Celebrate & Joi validation
 
-## Запуск проекта
+## Install the project
 `git clone https://github.com/space-boss/express-mesto`
+
 `npm install` - installs the dependencies;
+
 `npm run dev` — starts the server; 
+
 `npm run start` — starts the server with hot-reload;
