@@ -35,7 +35,7 @@ API is protected with authorization middleware.
 * Celebrate & Joi validation
 
 ## Install the project
-`git clone https://github.com/space-boss/express-mesto`
+`git clone https://github.com/space-boss/express-mesto.git`
 
 `npm install` - installs the dependencies;
 
